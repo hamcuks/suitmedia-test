@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/router.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/widgets/app_button.dart';
 
 class UserPage extends StatelessWidget {
@@ -36,7 +37,9 @@ class UserPage extends StatelessWidget {
             bottom: 32,
             child: AppButton(
               label: 'Choose a User',
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, MyRouter.chooseUser);
+              },
             ),
           ),
         ],
