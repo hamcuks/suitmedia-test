@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/cubit/get_name_cubit.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/cubit/get_selected_user.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/router.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/widgets/app_button.dart';
 
@@ -24,14 +25,18 @@ class UserPage extends StatelessWidget {
         children: [
           const Divider(),
           _buildSelectedUser(),
-          const Center(
-            child: Text(
-              'Selected User Name',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 24,
-              ),
-            ),
+          BlocBuilder<GetSelectedUserCubit, String>(
+            builder: (context, state) {
+              return Center(
+                child: Text(
+                  state.isEmpty ? 'Selected User' : state,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24,
+                  ),
+                ),
+              );
+            },
           ),
           Positioned(
             right: 20,
