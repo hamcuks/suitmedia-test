@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/cubit/get_name_cubit.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/cubit/get_selected_user.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/cubit/get_user/get_user_cubit.dart';
@@ -28,7 +29,6 @@ class _ChooseUserPageState extends State<ChooseUserPage> {
       if (_scrollController.position.atEdge &&
           _scrollController.position.pixels != 0) {
         page += 1;
-        log(page.toString());
         context.read<GetUserCubit>().getUsers(page: page);
       }
     });
@@ -63,8 +63,19 @@ class _ChooseUserPageState extends State<ChooseUserPage> {
                 child: Text('Failed to get data from server'),
               );
             } else if (state.status == GetUserState.success) {
+              if (state.items.isEmpty) {
+                return ListView(
+                  children: [
+                    Center(
+                      child: Lottie.asset('assets/empty.json'),
+                    ),
+                  ],
+                );
+              }
+
               return ListView.separated(
                 controller: _scrollController,
+                physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 itemCount: state.items.length,
                 itemBuilder: (context, index) =>
