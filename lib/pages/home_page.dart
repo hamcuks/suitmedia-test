@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/cubit/get_name_cubit.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/router.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/utils/utils.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/widgets/app_button.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/widgets/app_input.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _palindromeController = TextEditingController();
+  final GlobalKey<FormState> _form = GlobalKey();
 
   @override
   void dispose() {
@@ -39,9 +42,13 @@ class _HomePageState extends State<HomePage> {
               children: [
                 _buildUserAddIcon(),
                 const SizedBox(height: 58),
-                AppInputForm(
-                  controller: _nameController,
-                  hint: 'Name',
+                Form(
+                  key: _form,
+                  child: AppInputForm(
+                    controller: _nameController,
+                    hint: 'Name',
+                    required: true,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 AppInputForm(
@@ -59,7 +66,12 @@ class _HomePageState extends State<HomePage> {
                 AppButton(
                   label: 'NEXT',
                   onPressed: () {
-                    Navigator.pushNamed(context, MyRouter.user);
+                    if (_form.currentState!.validate()) {
+                      context
+                          .read<GetNameCubit>()
+                          .setName(_nameController.text);
+                      Navigator.pushNamed(context, MyRouter.user);
+                    }
                   },
                 ),
               ],

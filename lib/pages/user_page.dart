@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/cubit/get_name_cubit.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/router.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/widgets/app_button.dart';
 
@@ -52,21 +54,25 @@ class UserPage extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
+        children: [
+          const Text(
             'Welcome',
             style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 12,
             ),
           ),
-          SizedBox(height: 4),
-          Text(
-            'John Doe',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
+          const SizedBox(height: 4),
+          BlocBuilder<GetNameCubit, String>(
+            builder: (context, state) {
+              return Text(
+                state,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+              );
+            },
           ),
         ],
       ),
