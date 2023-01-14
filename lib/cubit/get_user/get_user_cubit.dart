@@ -22,11 +22,9 @@ class GetUserCubit extends Cubit<GetUserStatus> {
 
   void getUsers({int? page}) async {
     emit(state.copyWith(status: GetUserState.loading));
-    log('pppp');
 
     try {
-      final items = await UserService().getUsers();
-      log(items.data.toString());
+      final items = await UserService().getUsers(page: page ?? 1);
       emit(GetUserStatus(
         status: GetUserState.success,
         items: items.data,

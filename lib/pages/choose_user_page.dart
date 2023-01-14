@@ -16,9 +16,22 @@ class ChooseUserPage extends StatefulWidget {
 }
 
 class _ChooseUserPageState extends State<ChooseUserPage> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     context.read<GetUserCubit>().getUsers();
+
+    int page = 1;
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.atEdge &&
+          _scrollController.position.pixels != 0) {
+        page += 1;
+        log(page.toString());
+        context.read<GetUserCubit>().getUsers(page: page);
+      }
+    });
     super.initState();
   }
 
@@ -51,6 +64,7 @@ class _ChooseUserPageState extends State<ChooseUserPage> {
               );
             } else if (state.status == GetUserState.success) {
               return ListView.separated(
+                controller: _scrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 itemCount: state.items.length,
                 itemBuilder: (context, index) =>
