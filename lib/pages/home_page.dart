@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/router.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/utils/utils.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/widgets/app_button.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/widgets/app_input.dart';
 
@@ -50,7 +51,9 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 48),
                 AppButton(
                   label: 'CHECK',
-                  onPressed: () {},
+                  onPressed: () {
+                    _showDialog(context, _palindromeController.text);
+                  },
                 ),
                 const SizedBox(height: 16),
                 AppButton(
@@ -63,6 +66,37 @@ class _HomePageState extends State<HomePage> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Future<dynamic> _showDialog(BuildContext context, String text) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Text(
+                (text.isEmpty)
+                    ? 'Form harus diisi!'
+                    : text.isPalindrome
+                        ? 'is palindrome'
+                        : 'not palindrome',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+            AppButton(
+              label: 'Close',
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
       ),
     );
   }
