@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/pages/home_page.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/pages/user_page.dart';
 
 class MyRouter {
   static const home = '/home';
@@ -11,6 +12,8 @@ class MyRouter {
     switch (settings.name) {
       case home:
         return MaterialPageRoute(builder: (context) => const HomePage());
+      case user:
+        return MaterialPageRoute(builder: (context) => const UserPage());
       default:
         return MaterialPageRoute(builder: (context) => const HomePage());
     }

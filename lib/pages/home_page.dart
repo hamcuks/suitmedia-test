@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/router.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/widgets/app_button.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/widgets/app_input.dart';
 
@@ -54,7 +55,9 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 16),
                 AppButton(
                   label: 'NEXT',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, MyRouter.user);
+                  },
                 ),
               ],
             ),
