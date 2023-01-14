@@ -1,8 +1,26 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/cubit/get_name_cubit.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/cubit/get_selected_user.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/cubit/get_user/get_user_cubit.dart';
+import 'package:suitmedia_kampusmerdeka_tkd/models/user_model.dart';
 import 'package:suitmedia_kampusmerdeka_tkd/widgets/app_button.dart';
 
-class ChooseUserPage extends StatelessWidget {
+class ChooseUserPage extends StatefulWidget {
   const ChooseUserPage({super.key});
+
+  @override
+  State<ChooseUserPage> createState() => _ChooseUserPageState();
+}
+
+class _ChooseUserPageState extends State<ChooseUserPage> {
+  @override
+  void initState() {
+    context.read<GetUserCubit>().getUsers();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,51 +35,80 @@ class ChooseUserPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: 50,
-        itemBuilder: (context, index) => _buildContent(),
-        separatorBuilder: (context, index) => const Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
-          child: Divider(),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<GetUserCubit>().getUsers();
+        },
+        child: BlocBuilder<GetUserCubit, GetUserStatus>(
+          builder: (context, state) {
+            if (state.status == GetUserState.loading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state.status == GetUserState.error) {
+              return const Center(
+                child: Text('Failed to get data from server'),
+              );
+            } else if (state.status == GetUserState.success) {
+              return ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                itemCount: state.items.length,
+                itemBuilder: (context, index) =>
+                    _buildContent(state.items[index]),
+                separatorBuilder: (context, index) => const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Divider(),
+                ),
+              );
+            }
+
+            return const SizedBox();
+          },
         ),
       ),
     );
   }
 
-  Row _buildContent() {
-    return Row(
-      children: [
-        const SizedBox(
-          width: 49,
-          height: 49,
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80'),
+  GestureDetector _buildContent(UserItemModel data) {
+    return GestureDetector(
+      onTap: () {
+        context
+            .read<GetSelectedUserCubit>()
+            .setName('${data.firstName} ${data.lastName}');
+        Navigator.pop(context);
+      },
+      child: Row(
+        children: [
+          SizedBox(
+            width: 49,
+            height: 49,
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(data.avatar),
+            ),
           ),
-        ),
-        const SizedBox(width: 20),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              'Ini nama user',
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFF04021D),
+          const SizedBox(width: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${data.firstName} ${data.lastName}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF04021D),
+                ),
               ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              'Ini email user',
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFF686777),
+              const SizedBox(height: 4),
+              Text(
+                data.email,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF686777),
+                ),
               ),
-            ),
-          ],
-        )
-      ],
+            ],
+          )
+        ],
+      ),
     );
   }
 }
